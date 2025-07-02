@@ -1,49 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { loadData } from '../services/storage';
 import styles from './Dashboard.module.css';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
   const { transactions } = loadData();
 
-  const totalEntrada = transactions
-    .filter(tx => tx.type === 'entrada')
-    .reduce((acc, tx) => acc + tx.value, 0);
+  const hoje = new Date();
+  const dias = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(hoje.getDate() - (29 - i));
+    return d.toISOString().slice(0, 10); // formato YYYY-MM-DD
+  });
 
-  const totalSaida = transactions
-    .filter(tx => tx.type === 'saida')
-    .reduce((acc, tx) => acc + tx.value, 0);
+  const entradasPorDia = {};
+  const saidasPorDia = {};
 
+  dias.forEach(d => {
+    entradasPorDia[d] = 0;
+    saidasPorDia[d] = 0;
+  });
+
+  transactions.forEach(tx => {
+    const data = new Date(tx.date).toISOString().slice(0, 10);
+    if (dias.includes(data)) {
+      if (tx.type === 'entrada') {
+        entradasPorDia[data] += tx.value;
+      } else if (tx.type === 'saida') {
+        saidasPorDia[data] += tx.value;
+      }
+    }
+  });
+
+  const totalEntrada = Object.values(entradasPorDia).reduce((a, b) => a + b, 0);
+  const totalSaida = Object.values(saidasPorDia).reduce((a, b) => a + b, 0);
   const saldo = totalEntrada - totalSaida;
 
-  // Agrupar por categoria (só saídas)
-  const categorias = {};
-  transactions
-    .filter(tx => tx.type === 'saida')
-    .forEach(tx => {
-      const cat = tx.category || 'Outros';
-      categorias[cat] = (categorias[cat] || 0) + tx.value;
-    });
-
   const chartData = {
-    labels: Object.keys(categorias),
+    labels: dias.map(d => new Date(d).toLocaleDateString('pt-BR')),
     datasets: [
       {
-        label: 'Gastos por Categoria',
-        data: Object.values(categorias),
-        backgroundColor: [
-          '#f87171',
-          '#fb923c',
-          '#facc15',
-          '#4ade80',
-          '#60a5fa',
-          '#a78bfa',
-          '#f472b6'
-        ],
-        borderWidth: 1,
+        label: 'Entradas',
+        data: dias.map(d => entradasPorDia[d]),
+        backgroundColor: '#4ade80',
+      },
+      {
+        label: 'Saídas',
+        data: dias.map(d => saidasPorDia[d]),
+        backgroundColor: '#f87171',
       },
     ],
   };
@@ -61,19 +75,18 @@ export default function Dashboard() {
           <h2>💰 Saídas</h2>
           <p>R$ {totalSaida.toFixed(2)}</p>
         </div>
-        <div className={styles.card}>
+        <div className={`${styles.card} ${styles.saldo}`}>
           <h2>📊 Saldo</h2>
           <p>R$ {saldo.toFixed(2)}</p>
         </div>
       </div>
 
       <div className={styles.graphBox}>
-        <h2 className={styles.graphTitle}>Gastos por categoria</h2>
-        {Object.keys(categorias).length > 0 ? (
-          <Pie data={chartData} />
-        ) : (
-          <p className={styles.semDados}>Nenhuma saída registrada.</p>
-        )}
+        <h2 className={styles.graphTitle}>Entradas e saídas (últimos 30 dias)</h2>
+
+        <div className={styles.chartWrapper}>
+          <Bar data={chartData} options={{ responsive: true, maintainAspectRatio: false }} height={300} />
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadData, saveData } from '../services/storage';
 import styles from './Transactions.module.css';
 import buttonStyles from './Buttons.module.css';
 
 export default function Transactions() {
-  const { transactions } = loadData();
+  const {
+    transactions,
+    categoriasEntrada = ['Outros'],
+    categoriasSaida = ['Alimentação', 'Transporte', 'Lazer', 'Educação', 'Saúde', 'Outros'],
+  } = loadData();
+
   const [form, setForm] = useState({
     type: 'entrada',
     value: '',
@@ -12,6 +17,11 @@ export default function Transactions() {
     description: '',
     date: ''
   });
+
+  useEffect(() => {
+    const data = loadData();
+    // categorias carregadas aqui se necessário no futuro
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,6 +55,8 @@ export default function Transactions() {
     window.location.reload();
   }
 
+  const categoriasAtuais = form.type === 'entrada' ? categoriasEntrada : categoriasSaida;
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Transações</h1>
@@ -69,12 +81,11 @@ export default function Transactions() {
           className={styles.select}
         >
           <option value="">Selecione uma categoria</option>
-          <option value="Alimentação">🍔 Alimentação</option>
-          <option value="Transporte">🚌 Transporte</option>
-          <option value="Lazer">🎮 Lazer</option>
-          <option value="Educação">📚 Educação</option>
-          <option value="Saúde">💊 Saúde</option>
-          <option value="Outros">📦 Outros</option>
+          {categoriasAtuais.map((cat, idx) => (
+            <option key={idx} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
 
         <input
@@ -98,6 +109,7 @@ export default function Transactions() {
         </div>
       </form>
 
+      <h2 className={styles.subtitle}>Histórico</h2>
       <ul className={styles.list}>
         {transactions.map(tx => (
           <li

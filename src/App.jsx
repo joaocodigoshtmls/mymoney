@@ -4,8 +4,10 @@ import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Transactions from './components/Transactions';
 import Goals from './components/Goals';
+import Settings from './pages/Settings'; // ✅ importação da nova página
+import Statistics from './pages/Statistics';
 
-function App() {
+export default function App() {
   return (
     <>
       <Header />
@@ -14,9 +16,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/goals" element={<Goals />} />
+        <Route path="/settings" element={<Settings />} /> {/* ✅ nova rota */}
+        <Route path="/statistics" element={<Statistics />} />
       </Routes>
     </>
   );
 }
-
-export default App;

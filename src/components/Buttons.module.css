@@ -44,3 +44,40 @@
   background-color: #b91c1c;
   box-shadow: 0 3px 10px rgba(220, 38, 38, 0.4);
 }
+
+/* src/pages/Buttons.module.css */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.primary {
+  background-color: #4f46e5;
+  color: #ffffff;
+}
+
+.primary:hover {
+  background-color: #4338ca;
+}
+
+.secondary {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
+.secondary:hover {
+  background-color: #4b5563;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
