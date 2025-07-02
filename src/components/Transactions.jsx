@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { loadData, saveData } from '../services/storage';
+import styles from './Transactions.module.css';
 
 export default function Transactions() {
-  const { transactions, goals } = loadData();
+  const { transactions } = loadData();
   const [form, setForm] = useState({ type: 'entrada', value: '', category: '', description: '', date: '' });
 
   function handleChange(e) {
@@ -18,10 +19,17 @@ export default function Transactions() {
     window.location.reload();
   }
 
+  function handleDelete(id) {
+    const data = loadData();
+    data.transactions = data.transactions.filter(tx => tx.id !== id);
+    saveData(data);
+    window.location.reload();
+  }
+
   return (
-    <div>
-      <h1>Transações</h1>
-      <form onSubmit={handleSubmit}>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Transações</h1>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <select name="type" value={form.type} onChange={handleChange}>
           <option value="entrada">Entrada</option>
           <option value="saida">Saída</option>
@@ -32,9 +40,12 @@ export default function Transactions() {
         <input name="date" type="date" value={form.date} onChange={handleChange} />
         <button type="submit">Salvar</button>
       </form>
-      <ul>
+      <ul className={styles.list}>
         {transactions.map(tx => (
-          <li key={tx.id}>{tx.date} - {tx.category} - R$ {tx.value} ({tx.type})</li>
+          <li key={tx.id} className={styles.transactionItem}>
+            <strong>{tx.date}</strong> - {tx.category} - R$ {tx.value} ({tx.type})
+            <button onClick={() => handleDelete(tx.id)} className={styles.deleteButton}>Excluir</button>
+          </li>
         ))}
       </ul>
     </div>

@@ -1,0 +1,23 @@
+.header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px 32px;
+  border-radius: 0 0 12px 12px;
+  margin-bottom: 24px;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+}
+
+.link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #4f46e5; /* Indigo-600 */
+}
