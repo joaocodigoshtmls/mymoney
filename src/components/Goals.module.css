@@ -1,88 +1,114 @@
-
 .container {
-  background-color: #f7f9fc;
-  padding: 24px;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 2rem;
 }
 
 .title {
-  font-size: 24px;
-  margin-bottom: 16px;
-  color: #1a237e;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
 .form {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
 }
 
-.form input,
-.form button {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+.input,
+.dateInput {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
 
-.form button {
-  background-color: #1a237e;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.input:focus,
+.dateInput:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-.form button:hover {
-  background-color: #3949ab;
+.botaoContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .list {
   list-style: none;
   padding: 0;
+  margin-top: 2rem;
 }
 
 .goalItem {
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.metaCompleta {
+  background-color: #ecfdf5;
+  border-color: #10b981;
 }
 
 .goalHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
-  font-weight: bold;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.goalValue {
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .progressBar {
-  background-color: #eee;
-  border-radius: 4px;
-  height: 8px;
+  margin: 0.75rem 0;
+  background-color: #e5e7eb;
+  border-radius: 0.5rem;
+  height: 0.75rem;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .progressFill {
-  background-color: #1a237e;
   height: 100%;
+  background-color: #6366f1;
   transition: width 0.3s ease;
 }
 
-.addButton {
-  background-color: #0f9d58;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.goalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
 }
 
-.addButton:hover {
-  background-color: #0c7b43;
+.goalDate {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.footerButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inputAdd {
+  width: 6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
 }

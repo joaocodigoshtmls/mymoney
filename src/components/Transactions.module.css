@@ -1,54 +1,117 @@
-
 .container {
-  background-color: #f7f9fc;
-  padding: 24px;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 2rem;
 }
 
 .title {
-  font-size: 24px;
-  margin-bottom: 16px;
-  color: #1a237e;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
 .form {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
 }
 
-.form input,
-.form select,
-.form button {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+.input,
+.select,
+.dateInput {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
 
-.form button {
-  background-color: #1a237e;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.input:focus,
+.select:focus,
+.dateInput:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-.form button:hover {
-  background-color: #3949ab;
+.botaoContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .list {
   list-style: none;
   padding: 0;
+  margin-top: 2rem;
 }
 
 .transactionItem {
-  background-color: #fff;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.bgEntrada {
+  background-color: #f0fdf4;
+}
+
+.bgSaida {
+  background-color: #fef2f2;
+}
+
+.transactionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transactionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transactionDate {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.transactionValue {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.entrada {
+  color: #16a34a;
+}
+
+.saida {
+  color: #dc2626;
+}
+
+.transactionDescription {
+  font-size: 1rem;
+  color: #111827;
+  margin-top: 0.25rem;
+}
+
+.transactionFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryBadge {
+  padding: 0.3rem 0.6rem;
+  background-color: #e5e7eb;
+  color: #374151;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }

@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { loadData, saveData } from '../services/storage';
 import styles from './Transactions.module.css';
+import buttonStyles from './Buttons.module.css';
 
 export default function Transactions() {
   const { transactions } = loadData();
-  const [form, setForm] = useState({ type: 'entrada', value: '', category: '', description: '', date: '' });
+  const [form, setForm] = useState({
+    type: 'entrada',
+    value: '',
+    category: '',
+    description: '',
+    date: ''
+  });
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,7 +19,19 @@ export default function Transactions() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const tx = { ...form, value: parseFloat(form.value), id: Date.now() };
+
+    if (!form.value || isNaN(parseFloat(form.value))) {
+      alert('Por favor, insira um valor válido.');
+      return;
+    }
+
+    const tx = {
+      ...form,
+      value: parseFloat(form.value),
+      date: new Date(form.date).toISOString(),
+      id: Date.now()
+    };
+
     const data = loadData();
     data.transactions.push(tx);
     saveData(data);
@@ -30,21 +49,87 @@ export default function Transactions() {
     <div className={styles.container}>
       <h1 className={styles.title}>Transações</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <select name="type" value={form.type} onChange={handleChange}>
+        <select name="type" value={form.type} onChange={handleChange} className={styles.select}>
           <option value="entrada">Entrada</option>
           <option value="saida">Saída</option>
         </select>
-        <input name="value" placeholder="Valor" value={form.value} onChange={handleChange} />
-        <input name="category" placeholder="Categoria" value={form.category} onChange={handleChange} />
-        <input name="description" placeholder="Descrição" value={form.description} onChange={handleChange} />
-        <input name="date" type="date" value={form.date} onChange={handleChange} />
-        <button type="submit">Salvar</button>
+
+        <input
+          name="value"
+          placeholder="Valor"
+          value={form.value}
+          onChange={handleChange}
+          className={styles.input}
+        />
+
+        <select
+          name="category"
+          value={form.category}
+          onChange={handleChange}
+          className={styles.select}
+        >
+          <option value="">Selecione uma categoria</option>
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Transporte">🚌 Transporte</option>
+          <option value="Lazer">🎮 Lazer</option>
+          <option value="Educação">📚 Educação</option>
+          <option value="Saúde">💊 Saúde</option>
+          <option value="Outros">📦 Outros</option>
+        </select>
+
+        <input
+          name="description"
+          placeholder="Descrição"
+          value={form.description}
+          onChange={handleChange}
+          className={styles.input}
+        />
+
+        <input
+          name="date"
+          type="date"
+          value={form.date}
+          onChange={handleChange}
+          className={styles.dateInput}
+        />
+
+        <div className={styles.botaoContainer}>
+          <button type="submit" className={buttonStyles.botaoPrimario}>Salvar</button>
+        </div>
       </form>
+
       <ul className={styles.list}>
         {transactions.map(tx => (
-          <li key={tx.id} className={styles.transactionItem}>
-            <strong>{tx.date}</strong> - {tx.category} - R$ {tx.value} ({tx.type})
-            <button onClick={() => handleDelete(tx.id)} className={styles.deleteButton}>Excluir</button>
+          <li
+            key={tx.id}
+            className={`${styles.transactionItem} ${tx.type === 'entrada' ? styles.bgEntrada : styles.bgSaida}`}
+          >
+            <div className={styles.transactionInfo}>
+              <div className={styles.transactionHeader}>
+                <span className={styles.transactionDate}>
+                  {new Date(tx.date).toLocaleDateString('pt-BR')}
+                </span>
+                <span
+                  className={`${styles.transactionValue} ${tx.type === 'entrada' ? styles.entrada : styles.saida}`}
+                >
+                  {tx.type === 'entrada' ? '💸' : '💰'} R$ {Number(tx.value || 0).toFixed(2)}
+                </span>
+              </div>
+
+              <div className={styles.transactionDescription}>
+                {tx.description || 'Sem descrição'}
+              </div>
+
+              <div className={styles.transactionFooter}>
+                <span className={styles.categoryBadge}>{tx.category || 'Sem categoria'}</span>
+                <button
+                  onClick={() => handleDelete(tx.id)}
+                  className={buttonStyles.botaoPerigo}
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
