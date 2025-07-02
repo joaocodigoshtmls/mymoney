@@ -1,17 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
+import { FaChartPie, FaWallet, FaBullseye, FaChartLine, FaCog } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
     <header className={styles.header}>
+      <div className={styles.logo}>💰 Finance Manager</div>
       <nav className={styles.nav}>
-        <Link to="/dashboard" className={styles.link}>Dashboard</Link>
-        <Link to="/transactions" className={styles.link}>Transações</Link>
-        <Link to="/goals" className={styles.link}>Metas</Link>
-        <Link to="/statistics" className={styles.link}>Estatísticas</Link>
-        <Link to="/settings" className={styles.link}>Configurações</Link>
+        <Link to="/dashboard"><FaChartPie /> Dashboard</Link>
+        <Link to="/transactions"><FaWallet /> Transações</Link>
+        <Link to="/goals"><FaBullseye /> Metas</Link>
+        <Link to="/estatisticas"><FaChartLine /> Estatísticas</Link> {/* ⬅️ corrigido */}
+        <Link to="/settings"><FaCog /> Configurações</Link>
       </nav>
-    </header> 
+    </header>
   );
 }

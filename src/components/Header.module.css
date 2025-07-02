@@ -1,7 +1,21 @@
 .header {
-  background-color: #f3f4f6;
+  background: linear-gradient(to right, #6e30d1, #8844ee);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 1rem 2rem;
-  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid #b89df7;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .nav {
@@ -10,17 +24,19 @@
 }
 
 .nav a {
+  color: #ffffff;
   text-decoration: none;
-  color: #374151;
   font-weight: 500;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: transform 0.2s, background-color 0.2s, color 0.2s;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
 }
 
 .nav a:hover {
-  color: #4f46e5;
-}
-
-.active {
-  color: #4f46e5;
-  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+  color: #ffe;
 }

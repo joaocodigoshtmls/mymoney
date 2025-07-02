@@ -1,66 +1,76 @@
+/* Transactions.module.css atualizado com a nova paleta roxa */
+
 .container {
   padding: 2rem;
+  background-color: #f4f0fa;
+  min-height: 100vh;
 }
 
 .title {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #2b0a3d;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  background-color: #f9fafb;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 0.75rem;
+  border: 1px solid #d4c2ec;
+  box-shadow: 0 2px 6px rgba(95, 51, 135, 0.1);
 }
 
-.input,
 .select,
+.input,
 .dateInput {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem;
+  border: 1px solid #c8aaff;
   border-radius: 0.5rem;
-  border: 1px solid #d1d5db;
-  background-color: #fff;
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease;
-}
-
-.input:focus,
-.select:focus,
-.dateInput:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  font-size: 1rem;
+  background-color: #faf7ff;
+  width: 100%;
 }
 
 .botaoContainer {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #4b3d5a;
 }
 
 .list {
   list-style: none;
   padding: 0;
-  margin-top: 2rem;
 }
 
 .transactionItem {
+  background-color: #ffffff;
   padding: 1rem;
-  border-radius: 0.75rem;
-  margin-top: 1rem;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid transparent;
+  box-shadow: 0 2px 4px rgba(95, 51, 135, 0.1);
 }
 
 .bgEntrada {
-  background-color: #f0fdf4;
+  border-left-color: #4ade80;
+  background-color: #ecfdf5;
 }
 
 .bgSaida {
+  border-left-color: #f87171;
   background-color: #fef2f2;
 }
 
@@ -73,17 +83,11 @@
 .transactionHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.transactionDate {
-  font-size: 0.9rem;
-  color: #6b7280;
-  font-weight: 500;
+  font-weight: 600;
+  color: #2b0a3d;
 }
 
 .transactionValue {
-  font-size: 1.1rem;
   font-weight: bold;
 }
 
@@ -96,9 +100,7 @@
 }
 
 .transactionDescription {
-  font-size: 1rem;
-  color: #111827;
-  margin-top: 0.25rem;
+  color: #4b3d5a;
 }
 
 .transactionFooter {
@@ -108,10 +110,10 @@
 }
 
 .categoryBadge {
-  padding: 0.3rem 0.6rem;
-  background-color: #e5e7eb;
-  color: #374151;
-  border-radius: 999px;
-  font-size: 0.75rem;
+  background-color: #ede9f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
   font-weight: 500;
+  color: #6b21a8;
 }

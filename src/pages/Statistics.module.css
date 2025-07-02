@@ -1,15 +1,17 @@
+/* Statistics.module.css com paleta roxa moderna */
+
 .container {
   padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+  background-color: #f4f0fa;
+  min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
 
 .title {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #1f2937;
+  margin-bottom: 2rem;
+  color: #2b0a3d;
 }
 
 .controls {
@@ -20,37 +22,64 @@
 }
 
 .select {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #c8aaff;
+  background-color: #ffffff;
   font-size: 1rem;
-  border: 1px solid #d1d5db;
-  background-color: #f9fafb;
-  color: #111827;
-  transition: border 0.3s, background-color 0.3s;
+  color: #4b3d5a;
+  transition: border-color 0.2s ease;
 }
 
 .select:focus {
   outline: none;
-  border-color: #6366f1;
-  background-color: #fff;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
 .graphBox {
-  background-color: #f9f9f9;
-  border-radius: 12px;
+  background-color: #ffffff;
   padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-top: 1rem;
-  max-width: 100%;
-}
-
-.graphBox canvas {
-  max-width: 100% !important;
-  height: auto !important;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .semDados {
   font-style: italic;
   color: #6b7280;
   padding: 1rem;
+  text-align: center;
+} 
+
+.graphBox canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 400px;
+  margin-top: 1rem;
+} 
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.buttonGroup button {
+  background-color: #ede9f9;
+  color: #6b21a8;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonGroup button:hover {
+  background-color: #d8b4fe;
+}
+
+.buttonGroup .active {
+  background-color: #7c3aed;
+  color: #ffffff;
 }

@@ -5,20 +5,21 @@
 .title {
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  color: #2b0a3d;
 }
 
 .section {
   margin-top: 2rem;
   padding: 1.5rem;
-  background-color: #f9fafb;
+  background-color: #f4f0fa;
   border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #d4c2ec;
 }
 
 .section h2 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  color: #374151;
+  color: #4b3d5a;
 }
 
 .select,
@@ -26,17 +27,18 @@
   width: 100%;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #d1d5db;
-  background-color: #fff;
+  border: 1px solid #c8aaff;
+  background-color: #ffffff;
   font-size: 0.95rem;
   transition: border-color 0.2s ease;
+  color: #2b0a3d;
 }
 
 .select:focus,
 .input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
 .form {
@@ -59,8 +61,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 1rem;
-  background-color: #e5e7eb;
+  background-color: #ede9f9;
   border-radius: 0.5rem;
   font-size: 0.9rem;
-  color: #111827;
+  color: #4c1d95;
 }

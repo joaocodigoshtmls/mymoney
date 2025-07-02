@@ -4,8 +4,8 @@ import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Transactions from './components/Transactions';
 import Goals from './components/Goals';
-import Settings from './pages/Settings'; // ✅ importação da nova página
-import Statistics from './pages/Statistics';
+import Settings from './pages/Settings';
+import Estatisticas from './pages/Estatisticas'; // ⬅️ novo nome em português
 
 export default function App() {
   return (
@@ -16,8 +16,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/goals" element={<Goals />} />
-        <Route path="/settings" element={<Settings />} /> {/* ✅ nova rota */}
-        <Route path="/statistics" element={<Statistics />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/estatisticas" element={<Estatisticas />} /> {/* ⬅️ rota corrigida */}
       </Routes>
     </>
   );
