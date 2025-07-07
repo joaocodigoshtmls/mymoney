@@ -1,3 +1,4 @@
+// Estatisticas.jsx
 import React, { useState } from 'react';
 import { loadData } from '../services/storage';
 import styles from './Statistics.module.css';
@@ -23,9 +24,8 @@ ChartJS.register(
   ArcElement
 );
 
-export default function Statistics() {
+const Estatisticas = ({ completedGoals = [] }) => {
   const { transactions } = loadData();
-
   const [tipo, setTipo] = useState('saida');
   const [formato, setFormato] = useState('barra');
 
@@ -94,6 +94,29 @@ export default function Statistics() {
           Nenhuma {tipo === 'entrada' ? 'entrada' : 'saída'} registrada.
         </p>
       )}
+
+      {completedGoals.length > 0 && (
+        <div className={styles.completedBox}>
+          <h2>Metas concluídas</h2>
+          {completedGoals.map(meta => (
+            <div key={meta.id} className={styles.completedItem}>
+              <details>
+                <summary>{meta.nome}</summary>
+                <p>Valor total: {meta.moeda} {meta.valorTotal}</p>
+                <p>Prazo: {meta.prazo}</p>
+                <p>Histórico:</p>
+                <ul>
+                  {meta.historico.map((h, i) => (
+                    <li key={i}>+{meta.moeda} {h.valor} em {h.data}</li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default Estatisticas;

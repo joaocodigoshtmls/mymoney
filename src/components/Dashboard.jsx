@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { loadData } from '../services/storage';
 import styles from './Dashboard.module.css';
 import {
   Chart as ChartJS,
+  LineElement,
+  ArcElement,
   BarElement,
   CategoryScale,
   LinearScale,
+  PointElement,
   Tooltip,
-  Legend
+  Legend,
+  Filler // Plugin necessário para 'fill: true'
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler // Registro do plugin Filler
+);
 
 export default function Dashboard() {
   const { transactions } = loadData();
@@ -20,7 +34,7 @@ export default function Dashboard() {
   const dias = Array.from({ length: 30 }, (_, i) => {
     const d = new Date();
     d.setDate(hoje.getDate() - (29 - i));
-    return d.toISOString().slice(0, 10); // formato YYYY-MM-DD
+    return d.toISOString().slice(0, 10);
   });
 
   const entradasPorDia = {};
@@ -46,46 +60,115 @@ export default function Dashboard() {
   const totalSaida = Object.values(saidasPorDia).reduce((a, b) => a + b, 0);
   const saldo = totalEntrada - totalSaida;
 
-  const chartData = {
-    labels: dias.map(d => new Date(d).toLocaleDateString('pt-BR')),
+  const lineChartData = {
+    labels: dias.map((d, i) => {
+      const data = new Date(d);
+      return i % 5 === 0 ? data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '';
+    }),
     datasets: [
       {
         label: 'Entradas',
         data: dias.map(d => entradasPorDia[d]),
-        backgroundColor: '#4ade80',
+        borderColor: '#4ade80',
+        backgroundColor: 'rgba(74, 222, 128, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
       },
       {
         label: 'Saídas',
         data: dias.map(d => saidasPorDia[d]),
-        backgroundColor: '#f87171',
-      },
-    ],
+        borderColor: '#f87171',
+        backgroundColor: 'rgba(248, 113, 113, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      }
+    ]
+  };
+
+  const doughnutData = {
+    labels: ['Entradas', 'Saídas', 'Saldo'],
+    datasets: [
+      {
+        data: [totalEntrada, totalSaida, saldo],
+        backgroundColor: ['#4ade80', '#f87171', '#7c3aed'],
+        borderWidth: 1,
+        cutout: '60%'
+      }
+    ]
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Dashboard</h1>
 
-      <div className={styles.cardGrid}>
-        <div className={`${styles.card} ${styles.entrada}`}>
+      <div className={styles.grid}>
+        <div className={`${styles.card} ${styles.cardEntrada}`}>
           <h2>💸 Entradas</h2>
           <p>R$ {totalEntrada.toFixed(2)}</p>
         </div>
-        <div className={`${styles.card} ${styles.saida}`}>
+
+        <div className={`${styles.card} ${styles.cardSaida}`}>
           <h2>💰 Saídas</h2>
           <p>R$ {totalSaida.toFixed(2)}</p>
         </div>
-        <div className={`${styles.card} ${styles.saldo}`}>
+
+        <div className={`${styles.card} ${styles.cardSaldo}`}>
           <h2>📊 Saldo</h2>
           <p>R$ {saldo.toFixed(2)}</p>
         </div>
       </div>
 
-      <div className={styles.graphBox}>
-        <h2 className={styles.graphTitle}>Entradas e saídas (últimos 30 dias)</h2>
+      <div className={styles.graphSection}>
+        <div className={styles.lineBox}>
+          <h2>📈 Entradas e Saídas (últimos 30 dias)</h2>
+          <Line
+            data={lineChartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  labels: {
+                    color: '#333',
+                    font: { size: 12, weight: 'bold' }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: { color: '#666' },
+                  grid: { display: false }
+                },
+                y: {
+                  ticks: { color: '#666' },
+                  grid: { color: '#e0e0e0' }
+                }
+              }
+            }}
+          />
+        </div>
 
-        <div className={styles.chartWrapper}>
-          <Bar data={chartData} options={{ responsive: true, maintainAspectRatio: false }} height={300} />
+        <div className={styles.donutBox}>
+          <h2>📊 Distribuição</h2>
+          <Doughnut
+            data={doughnutData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    color: '#333',
+                    font: { size: 12 }
+                  }
+                }
+              }
+            }}
+          />
         </div>
       </div>
     </div>

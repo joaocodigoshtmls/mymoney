@@ -1,145 +1,195 @@
-import React, { useState } from 'react';
-import { loadData, saveData } from '../services/storage';
+import React, { useEffect, useState } from 'react';
 import styles from './Goals.module.css';
-import buttonStyles from './Buttons.module.css';
+import { loadData, saveData } from '../services/storage';
 
 export default function Goals() {
-  const { goals } = loadData();
-  const [form, setForm] = useState({ name: '', target: '', date: '' });
-  const [addValueMap, setAddValueMap] = useState({});
+  const { goals = [], transactions = [] } = loadData();
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const [novaMeta, setNovaMeta] = useState({ name: '', value: '', date: '', currency: 'R$' });
+  const [valores, setValores] = useState({});
+  const [lista, setLista] = useState(goals);
+  const [cotacoes, setCotacoes] = useState({}); // Armazena cotações por moeda
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  const salvarMetas = metas => {
+    saveData({ ...loadData(), goals: metas });
+    setLista(metas);
+  };
 
-    if (!form.name || !form.target || isNaN(parseFloat(form.target))) {
-      alert('Preencha os dados corretamente.');
-      return;
+  const buscarCotacoes = async () => {
+    const moedas = [...new Set(lista.map(m => m.currency).filter(m => m !== 'R$'))];
+    const novasCotacoes = {};
+
+    await Promise.all(
+      moedas.map(async (moeda) => {
+        try {
+          const res = await fetch(`https://api.exchangerate.host/latest?base=${moeda.replace('$', '')}&symbols=BRL`);
+          const data = await res.json();
+          novasCotacoes[moeda] = data.rates?.BRL || 1;
+        } catch (e) {
+          novasCotacoes[moeda] = 1;
+        }
+      })
+    );
+
+    setCotacoes({ ...novasCotacoes, 'R$': 1 }); // R$ sempre 1:1
+  };
+
+  useEffect(() => {
+    if (lista.length > 0) {
+      buscarCotacoes();
     }
+  }, [lista]);
 
-    const goal = {
-      ...form,
-      target: parseFloat(form.target),
-      current: 0,
-      id: Date.now()
+  const handleCreateGoal = () => {
+    if (!novaMeta.name || !novaMeta.value || !novaMeta.date) return;
+    const nova = { ...novaMeta, added: 0, done: false, id: Date.now() };
+    const novas = [...lista, nova];
+    salvarMetas(novas);
+    setNovaMeta({ name: '', value: '', date: '', currency: 'R$' });
+  };
+
+  const handleAddValue = (metaId) => {
+    const valor = parseFloat(valores[metaId]);
+    if (isNaN(valor) || valor <= 0) return;
+
+    const tipo = window.confirm('Esse valor já foi pago? (OK para "Sim", Cancelar para "Guardado")')
+      ? 'saida'
+      : 'entrada';
+
+    const novasMetas = lista.map(m => {
+      if (m.id === metaId) {
+        return { ...m, added: (m.added || 0) + valor };
+      }
+      return m;
+    });
+
+    const novaTransacao = {
+      id: Date.now(),
+      type: tipo,
+      category: 'Meta: ' + lista.find(m => m.id === metaId).name,
+      value: valor,
+      date: new Date().toISOString()
     };
 
-    const data = loadData();
-    data.goals.push(goal);
-    saveData(data);
-    window.location.reload();
-  }
+    saveData({
+      ...loadData(),
+      goals: novasMetas,
+      transactions: [...transactions, novaTransacao]
+    });
 
-  function handleAddValue(id) {
-    const value = parseFloat(addValueMap[id]);
-    if (!value || isNaN(value)) return;
+    setLista(novasMetas);
+    setValores({ ...valores, [metaId]: '' });
+  };
 
-    const data = loadData();
-    const goal = data.goals.find(g => g.id === id);
-    if (!goal) return;
+  const handleConclude = (metaId) => {
+    const novas = lista.map(m => m.id === metaId ? { ...m, done: true } : m);
+    salvarMetas(novas);
+  };
 
-    goal.current += value;
-    saveData(data);
-    window.location.reload();
-  }
+  const handleDelete = (metaId) => {
+    const confirm = window.confirm('Deseja realmente excluir esta meta concluída?');
+    if (!confirm) return;
+    const novas = lista.filter(m => m.id !== metaId);
+    salvarMetas(novas);
+  };
 
-  function handleDelete(id) {
-    const data = loadData();
-    data.goals = data.goals.filter(g => g.id !== id);
-    saveData(data);
-    window.location.reload();
-  }
+  const metasAtivas = lista.filter(meta => !meta.done);
+  const metasConcluidas = lista.filter(meta => meta.done);
 
-  function handleValueInputChange(id, e) {
-    setAddValueMap(prev => ({ ...prev, [id]: e.target.value }));
-  }
+  const renderMeta = (meta, isConcluida = false) => {
+    const cotacao = cotacoes[meta.currency] || 1;
+    const valorJurosConvertido = meta.value * 1.1268 * cotacao;
+
+    return (
+      <div key={meta.id} className={styles.metaBox}>
+        <div className={styles.metaHeader}>
+          <span>📱 <strong>{meta.name}</strong></span>
+          <span>
+            {meta.currency} {meta.added || 0} de {meta.value}
+          </span>
+        </div>
+
+        <div className={styles.progress}>
+          <div
+            className={styles.progressBar}
+            style={{ width: `${((meta.added || 0) / meta.value) * 100}%` }}
+          ></div>
+        </div>
+
+        <div className={styles.metaFooter}>
+          <span>Prazo: {meta.date}</span>
+          <span>
+            Cotação atual: {meta.currency} 1 = R$ {cotacao.toFixed(2)}
+          </span>
+          <span>Projeção com juros: R$ {valorJurosConvertido.toFixed(2)}</span>
+        </div>
+
+        <div className={styles.metaActions}>
+          {!isConcluida ? (
+            <>
+              <select disabled>
+                <option>{meta.currency}</option>
+              </select>
+              <input
+                value={valores[meta.id] || ''}
+                onChange={e => setValores({ ...valores, [meta.id]: e.target.value })}
+                placeholder="Valor"
+              />
+              <button onClick={() => handleAddValue(meta.id)}>Adicionar</button>
+              <button className={styles.btnConcluir} onClick={() => handleConclude(meta.id)}>Concluir</button>
+            </>
+          ) : (
+            <button className={styles.btnExcluir} onClick={() => handleDelete(meta.id)}>🗑️ Excluir</button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Metas</h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <input
-          name="name"
-          placeholder="Nome da meta"
-          value={form.name}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <input
-          name="target"
-          placeholder="Valor desejado"
-          value={form.target}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <input
-          name="date"
-          type="date"
-          value={form.date}
-          onChange={handleChange}
-          className={styles.dateInput}
-        />
-        <div className={styles.botaoContainer}>
-          <button type="submit" className={buttonStyles.botaoPrimario}>Criar meta</button>
-        </div>
-      </form>
 
-      <ul className={styles.list}>
-        {goals.map(goal => {
-          const percentage = Math.min((goal.current / goal.target) * 100, 100);
-          const completa = percentage >= 100;
-          return (
-            <li
-              key={goal.id}
-              className={`${styles.goalItem} ${completa ? styles.metaCompleta : ''}`}
-            >
-              <div className={styles.goalHeader}>
-                <span className={styles.goalName}>🎯 {goal.name}</span>
-                <span className={styles.goalValue}>
-                  R$ {goal.current} de R$ {goal.target}
-                </span>
-              </div>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${percentage}%` }}
-                ></div>
-              </div>
-              <div className={styles.goalFooter}>
-                <span className={styles.goalDate}>
-                  Prazo: {new Date(goal.date).toLocaleDateString('pt-BR')}
-                </span>
-                <div className={styles.footerButtons}>
-                  <input
-                    type="number"
-                    placeholder="R$"
-                    className={styles.inputAdd}
-                    value={addValueMap[goal.id] || ''}
-                    onChange={(e) => handleValueInputChange(goal.id, e)}
-                  />
-                  <button
-                    onClick={() => handleAddValue(goal.id)}
-                    type="button"
-                    className={buttonStyles.botaoPrimario}
-                  >
-                    Adicionar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(goal.id)}
-                    type="button"
-                    className={buttonStyles.botaoPerigo}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <div className={styles.form}>
+        <input
+          placeholder="Nome da meta"
+          value={novaMeta.name}
+          onChange={e => setNovaMeta({ ...novaMeta, name: e.target.value })}
+        />
+        <select
+          value={novaMeta.currency}
+          onChange={e => setNovaMeta({ ...novaMeta, currency: e.target.value })}
+        >
+          <option>R$</option>
+          <option>US$</option>
+          <option>€</option>
+        </select>
+        <input
+          placeholder="Valor desejado"
+          value={novaMeta.value}
+          onChange={e => setNovaMeta({ ...novaMeta, value: e.target.value })}
+        />
+        <input
+          type="date"
+          value={novaMeta.date}
+          onChange={e => setNovaMeta({ ...novaMeta, date: e.target.value })}
+        />
+        <button onClick={handleCreateGoal}>Criar meta</button>
+      </div>
+
+      {metasAtivas.length > 0 && (
+        <div>
+          <h2 className={styles.subTitle}>Metas em andamento</h2>
+          {metasAtivas.map(meta => renderMeta(meta))}
+        </div>
+      )}
+
+      {metasConcluidas.length > 0 && (
+        <div>
+          <h2 className={styles.subTitle}>Metas Concluídas</h2>
+          {metasConcluidas.map(meta => renderMeta(meta, true))}
+        </div>
+      )}
     </div>
   );
 }
