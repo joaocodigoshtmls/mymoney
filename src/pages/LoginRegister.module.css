@@ -1,0 +1,105 @@
+.page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #7c3aed, #4c1d95);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.header img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 1.6rem;
+  color: #4c1d95;
+  margin-bottom: 1.5rem;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.tabs button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #7c3aed;
+  border-bottom: 2px solid transparent;
+  transition: border 0.2s;
+}
+
+.tabs button.active {
+  font-weight: bold;
+  border-color: #7c3aed;
+}
+
+.form input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.submit {
+  background-color: #7c3aed;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit:hover {
+  background-color: #5b21b6;
+}
+
+.google {
+  background-color: #e5e7eb;
+  color: #111827;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.google:hover {
+  background-color: #d1d5db;
+}
+
+.divider {
+  margin: 1rem 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}

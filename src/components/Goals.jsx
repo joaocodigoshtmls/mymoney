@@ -8,7 +8,8 @@ export default function Goals() {
   const [novaMeta, setNovaMeta] = useState({ name: '', value: '', date: '', currency: 'R$' });
   const [valores, setValores] = useState({});
   const [lista, setLista] = useState(goals);
-  const [cotacoes, setCotacoes] = useState({}); // Armazena cotações por moeda
+  const [cotacoes, setCotacoes] = useState({});
+  const [metaParaExcluir, setMetaParaExcluir] = useState(null); // Nova state para controle do modal
 
   const salvarMetas = metas => {
     saveData({ ...loadData(), goals: metas });
@@ -31,7 +32,7 @@ export default function Goals() {
       })
     );
 
-    setCotacoes({ ...novasCotacoes, 'R$': 1 }); // R$ sempre 1:1
+    setCotacoes({ ...novasCotacoes, 'R$': 1 });
   };
 
   useEffect(() => {
@@ -52,10 +53,6 @@ export default function Goals() {
     const valor = parseFloat(valores[metaId]);
     if (isNaN(valor) || valor <= 0) return;
 
-    const tipo = window.confirm('Esse valor já foi pago? (OK para "Sim", Cancelar para "Guardado")')
-      ? 'saida'
-      : 'entrada';
-
     const novasMetas = lista.map(m => {
       if (m.id === metaId) {
         return { ...m, added: (m.added || 0) + valor };
@@ -65,7 +62,7 @@ export default function Goals() {
 
     const novaTransacao = {
       id: Date.now(),
-      type: tipo,
+      type: 'entrada',
       category: 'Meta: ' + lista.find(m => m.id === metaId).name,
       value: valor,
       date: new Date().toISOString()
@@ -86,11 +83,10 @@ export default function Goals() {
     salvarMetas(novas);
   };
 
-  const handleDelete = (metaId) => {
-    const confirm = window.confirm('Deseja realmente excluir esta meta concluída?');
-    if (!confirm) return;
-    const novas = lista.filter(m => m.id !== metaId);
+  const confirmarExclusao = () => {
+    const novas = lista.filter(m => m.id !== metaParaExcluir.id);
     salvarMetas(novas);
+    setMetaParaExcluir(null);
   };
 
   const metasAtivas = lista.filter(meta => !meta.done);
@@ -139,7 +135,7 @@ export default function Goals() {
               <button className={styles.btnConcluir} onClick={() => handleConclude(meta.id)}>Concluir</button>
             </>
           ) : (
-            <button className={styles.btnExcluir} onClick={() => handleDelete(meta.id)}>🗑️ Excluir</button>
+            <button className={styles.btnExcluir} onClick={() => setMetaParaExcluir(meta)}>🗑️ Excluir</button>
           )}
         </div>
       </div>
@@ -188,6 +184,19 @@ export default function Goals() {
         <div>
           <h2 className={styles.subTitle}>Metas Concluídas</h2>
           {metasConcluidas.map(meta => renderMeta(meta, true))}
+        </div>
+      )}
+
+      {/* Modal de confirmação */}
+      {metaParaExcluir && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <p>Deseja realmente excluir esta meta concluída?</p>
+            <div className={styles.modalButtons}>
+              <button className={styles.btnConfirmar} onClick={confirmarExclusao}>OK</button>
+              <button className={styles.btnCancelar} onClick={() => setMetaParaExcluir(null)}>Cancelar</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

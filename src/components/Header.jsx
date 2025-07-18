@@ -2,6 +2,11 @@ import React from 'react';
 import styles from './Header.module.css';
 import { FaChartPie, FaWallet, FaBullseye, FaChartLine, FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../services/firebase';
+
+<button onClick={() => signOut(auth)}>Sair</button>
+
 
 export default function Header() {
   return (
