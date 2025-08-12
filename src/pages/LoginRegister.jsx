@@ -4,7 +4,7 @@ import { auth, provider } from '../services/firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect, // trocado para redirecionamento
 } from 'firebase/auth';
 
 export default function LoginRegister() {
@@ -39,9 +39,9 @@ export default function LoginRegister() {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider); // redirecionamento ao invés de popup
     } catch (error) {
-      setErro(error.message);
+      setErro(error.message || 'Erro no login com Google');
     }
   };
 
@@ -49,7 +49,7 @@ export default function LoginRegister() {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <img src="/coin_icon.png" alt="logo" />
+          <img src="/foto.png" alt="logo" />
           <h1>Finance Manager</h1>
         </div>
 
